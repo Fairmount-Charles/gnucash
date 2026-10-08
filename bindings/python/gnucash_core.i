@@ -297,6 +297,7 @@ GNC_ACCEPT_WRAPPER(GncEntry)
 }
 
 static const GncGUID * gncEntryGetGUID(GncEntry *x);
+static const GncGUID * gncInvoiceGetGUID(GncInvoice *x);
 
 %include <gnc-lot.h>
 

@@ -323,6 +323,7 @@ taxtableentry_dict = {
 
 # Invoice
 Invoice.add_constructor_and_methods_with_prefix('gncInvoice', 'Create')
+Invoice.add_method('gncInvoiceGetGUID', 'GetGUID')
 methods_return_instance_lists(
     Invoice, { 'GetEntries': Entry })
 
@@ -333,6 +334,7 @@ Invoice.add_method('gncInvoiceUnpost', 'Unpost')
 Bill.add_methods_with_prefix('gncBill')
 
 invoice_dict = {
+                   'GetGUID': GUID,
                    'GetTerms': BillTerm,
                    'GetCurrency': GncCommodity,
                    'GetToChargeAmount': GncNumeric,
