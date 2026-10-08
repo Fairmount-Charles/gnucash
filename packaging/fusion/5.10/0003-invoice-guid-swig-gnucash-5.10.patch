@@ -1,0 +1,25 @@
+diff --git a/bindings/python/gnucash_core.i b/bindings/python/gnucash_core.i
+--- a/bindings/python/gnucash_core.i
++++ b/bindings/python/gnucash_core.i
+@@ -190,6 +190,7 @@
+ }
+ 
+ static const GncGUID * gncEntryGetGUID(GncEntry *x);
++static const GncGUID * gncInvoiceGetGUID(GncInvoice *x);
+ 
+ %include <gnc-lot.h>
+ 
+diff --git a/bindings/python/gnucash_business.py b/bindings/python/gnucash_business.py
+--- a/bindings/python/gnucash_business.py
++++ b/bindings/python/gnucash_business.py
+@@ -325,4 +325,5 @@
+ Invoice.add_constructor_and_methods_with_prefix('gncInvoice', 'Create')
++Invoice.add_method('gncInvoiceGetGUID', 'GetGUID')
+ methods_return_instance_lists(
+     Invoice, { 'GetEntries': Entry })
+ 
+@@ -335,3 +336,4 @@
+ invoice_dict = {
++                   'GetGUID': GUID,
+                    'GetTerms': BillTerm,
+                    'GetCurrency': GncCommodity,

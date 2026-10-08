@@ -1,0 +1,19 @@
+--- a/libgnucash/backend/xml/gnc-xml-backend.cpp
++++ b/libgnucash/backend/xml/gnc-xml-backend.cpp
+@@ -695,8 +695,15 @@
+     }
+ 
+     auto timestamp = gnc_date_timestamp ();
+-    auto backup = m_fullpath + "." + timestamp + GNC_DATAFILE_EXT;
++    auto prefix = m_fullpath + "." + timestamp;
++    auto backup = prefix + GNC_DATAFILE_EXT;
+     g_free (timestamp);
++
++    // A single writer can save more than once in the timestamp's second.
++    // Preserve every backup instead of treating a name collision as save failure.
++    unsigned int sequence = 0;
++    while (g_file_test (backup.c_str(), G_FILE_TEST_EXISTS))
++        backup = prefix + "-" + std::to_string (++sequence) + GNC_DATAFILE_EXT;
+ 
+     return link_or_make_backup (datafile, backup);
+ }
