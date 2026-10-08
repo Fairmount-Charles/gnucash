@@ -1,15 +1,15 @@
 diff --git a/bindings/python/gnucash_core.i b/bindings/python/gnucash_core.i
-index ce3e41e..4c67b09 100644
+index ce3e41e..b4b7b4b 100644
 --- a/bindings/python/gnucash_core.i
 +++ b/bindings/python/gnucash_core.i
-@@ -193,6 +193,7 @@ static const GncGUID * gncEntryGetGUID(GncEntry *x);
+@@ -192,6 +192,7 @@
+ static const GncGUID * gncEntryGetGUID(GncEntry *x);
  static const GncGUID * gncInvoiceGetGUID(GncInvoice *x);
  
- %include <gnc-lot.h>
 +static const GncGUID * gnc_lot_get_guid(GNCLot *x);
+ %include <gnc-lot.h>
  
  //core business includes
- %include <gncOwner.h>
 diff --git a/bindings/python/gnucash_core.py b/bindings/python/gnucash_core.py
 index 993ad89..85090a4 100644
 --- a/bindings/python/gnucash_core.py
