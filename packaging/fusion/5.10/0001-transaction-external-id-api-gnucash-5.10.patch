@@ -1,0 +1,99 @@
+--- a/libgnucash/engine/Transaction.cpp
++++ b/libgnucash/engine/Transaction.cpp
+@@ -184,6 +184,7 @@
+ #define TRANS_READ_ONLY_REASON   "trans-read-only"
+ #define TRANS_REVERSED_BY        "reversed-by"
+ #define GNC_SX_FROM              "from-sched-xaction"
++#define TRANS_EXTERNAL_ID_KVP    "external-id"
+ 
+ #define ISO_DATELENGTH 32 /* length of an iso 8601 date string. */
+ 
+@@ -683,6 +684,9 @@
+ 
+     xaccTransBeginEdit (to);
+     qof_instance_copy_kvp (QOF_INSTANCE (to), QOF_INSTANCE (from));
++
++    /* Copies must not inherit source-system external identities. */
++    qof_instance_set_kvp (QOF_INSTANCE (to), nullptr, 1, TRANS_EXTERNAL_ID_KVP);
+ 
+     /* But not the online-id! */
+     qof_instance_set (QOF_INSTANCE (to), "online-id", nullptr, nullptr);
+@@ -2125,6 +2129,30 @@
+ }
+ 
+ void
++xaccTransSetExternalId (Transaction *trans, const char *name_space,
++                        const char *external_id)
++{
++    if (!trans || !name_space || !*name_space) return;
++    xaccTransBeginEdit(trans);
++    if (external_id && *external_id)
++    {
++        GValue v = G_VALUE_INIT;
++        g_value_init (&v, G_TYPE_STRING);
++        g_value_set_static_string (&v, external_id);
++        qof_instance_set_kvp (QOF_INSTANCE (trans), &v, 2,
++                              TRANS_EXTERNAL_ID_KVP, name_space);
++        g_value_unset (&v);
++    }
++    else
++    {
++        qof_instance_set_kvp (QOF_INSTANCE (trans), nullptr, 2,
++                              TRANS_EXTERNAL_ID_KVP, name_space);
++    }
++    qof_instance_set_dirty(QOF_INSTANCE(trans));
++    xaccTransCommitEdit(trans);
++}
++
++void
+ xaccTransSetIsClosingTxn (Transaction *trans, gboolean is_closing)
+ {
+     if (!trans) return;
+@@ -2330,6 +2358,19 @@
+     g_value_unset (&v);
+ 
+     return notes;
++}
++
++const char *
++xaccTransGetExternalId (const Transaction *trans, const char *name_space)
++{
++    if (!trans || !name_space || !*name_space) return nullptr;
++    GValue v = G_VALUE_INIT;
++    qof_instance_get_kvp (QOF_INSTANCE (trans), &v, 2,
++                          TRANS_EXTERNAL_ID_KVP, name_space);
++    const char *external_id = G_VALUE_HOLDS_STRING (&v)
++        ? g_value_get_string (&v) : nullptr;
++    g_value_unset (&v);
++    return external_id;
+ }
+ 
+ gboolean
+--- a/libgnucash/engine/Transaction.h
++++ b/libgnucash/engine/Transaction.h
+@@ -337,6 +337,14 @@
+  The Notes field is only visible in the register in double-line mode */
+ void          xaccTransSetNotes (Transaction *trans, const char *notes);
+ 
++/** Set or clear a persistent machine identifier scoped by namespace.
++ * NULL or empty external_id clears the value. Copies do not inherit IDs.
++ * Engine-owned metadata is separate from user-visible transaction fields.
++ */
++void          xaccTransSetExternalId (Transaction *trans,
++                                      const char *name_space,
++                                      const char *external_id);
++
+ /** Gets the transaction Number (or ID) field; rather than use this function
+  *  directly, see 'gnc_get_num_action' and 'gnc_get_action_num' in
+  *  engine/engine-helpers.c & .h which takes a user-set book option for
+@@ -351,6 +359,10 @@
+  *
+  The Notes field is only visible in the register in double-line mode */
+ const char *  xaccTransGetNotes (const Transaction *trans);
++
++/** Get the machine identifier for name_space, or NULL if unset. */
++const char *  xaccTransGetExternalId (const Transaction *trans,
++                                      const char *name_space);
+ 
+ 
+ /** Sets whether or not this transaction is a "closing transaction" */
