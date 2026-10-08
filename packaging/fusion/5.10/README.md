@@ -11,6 +11,9 @@ packaging inputs and all upstream license/copyright notices.
 3. Existing authoritative invoice GUID exposed through SWIG and the typed Python
    Invoice.GetGUID wrapper; adapted from this fork's invoice binding repair.
 
+4. Existing authoritative lot GUID exposed through SWIG and typed GncLot.get_guid.
+   Required for posted invoice/payment lot identity readback.
+
 This directory is the authoritative editable 5.10 repair set. Server-framework
 patch copies are historical compatibility artifacts until replaced by references
 here. Provider semantics and retained qualification journeys remain owned by
