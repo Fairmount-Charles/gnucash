@@ -28,3 +28,14 @@ Retain prior Debian packages for rollback and never overwrite active accounting 
 
 Do not add credentials, books, customer data, worker grants, or Fusion authorization
 policy to GnuCash. Repository revisions are build provenance, not runtime eligibility.
+
+5. Existing engine-owned Book string-option getters/setters exposed through SWIG.
+   This enables native persistent fiscal policy without a sidecar accounting store.
+   The API and C ABI already exist; this repair changes binding declarations only.
+
+The fifth repair was built as Debian 1:5.10-0.1+fc5. Its Python 3.13 bindings
+were also qualified with the installed fc4 engine libraries on the dedicated
+Accounting host. Real disposable-book provider C, D and E journeys passed;
+the retained C journey includes closed-period write denial, linked journal
+reversal and reopening, and E verifies policy survives backup/isolated restore.
+This is native capability evidence, not live Runtime or release acceptance.
