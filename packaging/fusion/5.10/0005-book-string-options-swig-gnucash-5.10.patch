@@ -1,0 +1,14 @@
+--- a/bindings/python/gnucash_core.i
++++ b/bindings/python/gnucash_core.i
+@@ -99,6 +99,11 @@
+ 
+ %include <qofbook.h>
+ 
++/* Expose existing engine-owned, persistent string options. The declarations
++ * in qofbook.h are hidden from SWIG by its C++ section. */
++const char* qof_book_get_string_option(const QofBook* book, const char* opt_name);
++void qof_book_set_string_option(QofBook* book, const char* opt_name, const char* opt_val);
++
+ %include <qofid.h>
+ 
+ %include <qofquery.h>
